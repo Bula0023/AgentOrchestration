@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+
+  backend:
+    build:
+      context: ./backend
+    container_name: agent-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - chroma
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      OLLAMA_URL: http://host.docker.internal:11434
+
+      CHROMA_HOST: chroma
+      CHROMA_PORT: 8000
+    volumes:
+      - ./backend:/app
+    command:
+      uvicorn main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+
+
+  frontend:
+    build:
+      context: ./UI
+    container_name: agent-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./UI:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://localhost:8000
+    command:
+      npm run dev
+      -- --host 0.0.0.0
+
+
+  redis:
+    image: redis:7-alpine
+    container_name: agent-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command:
+      redis-server
+      --appendonly yes
+
+
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: agent-chroma
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+
+
+volumes:
+
+  redis_data:
+
+  chroma_data:
