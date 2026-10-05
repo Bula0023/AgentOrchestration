@@ -1,0 +1,14 @@
+langgraph
+langchain-ollama
+pydantic
+python-dotenv
+pytest
+chromadb
+redis
+fakeredis
+opentelemetry-api
+opentelemetry-sdk
+uvicorn
+fastapi
+openai
+langchain-openai

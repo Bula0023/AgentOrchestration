@@ -1,0 +1,25 @@
+Hello from my agent system!
+
+Routing
+✓ specialist success → confidence
+✓ specialist failure → retry
+✓ high confidence → continue
+✓ low confidence → human
+✓ too many retries → human
+
+Scheduling
+✓ first available task selected
+✓ unfinished dependency blocks task
+✓ finished dependency allows task
+✓ completed task isn't selected again
+
+State
+✓ save_result stores correct task
+✓ previous results aren't deleted
+✓ retry_count increments
+✓ save_result resets retry_count
+
+Registry
+✓ allowed specialist can call tool
+✓ forbidden specialist is rejected
+✓ invalid input schema is rejected
