@@ -61,7 +61,8 @@ def sensitive_operation_node(state: AgentState):
         Escalate if the action involves:
         - a financial transaction
         - deletion of user or external data
-        - sending external communications
+        - sending external communications like email
+        - any other action that could have significant consequences
 
         Classify only the proposed action.
         """
@@ -144,7 +145,7 @@ def prepare_escalation_node(state: AgentState):
         if state.get(
         "revision_count",
             0
-        ) > 2:
+        ) > 2 or approval_level == ApprovalLevel.TAKE_OVER:
             approval_queue.enqueue(request)
 
         return {

@@ -125,7 +125,7 @@ class ApprovalQueue:
         
         request = json.loads(data)
 
-        request["status"] = "modified"
+        request["current_step"]["status"] = "modified"
         request["modified_action"] = modified_action
 
         self.client.set(

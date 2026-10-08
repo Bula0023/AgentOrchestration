@@ -1,8 +1,7 @@
 
 from unittest.mock import patch
 
-from approval.escalation import prepare_escalation_node
-
+from approval.escalation import prepare_escalation_node, ApprovalLevel
 
 def test_prepare_escalation_creates_approval_request():
 
@@ -25,15 +24,27 @@ def test_prepare_escalation_creates_approval_request():
             "description": "Send email",
             "specialist": "writing",
         },
-        "proposed_action": "Send email to customer",
+        "proposed_action": {
+            "tool_name": "send_email",
+            "tool_inputs": {
+                "to": "example@email.com",
+                "subject": "Test email",
+                "body": "Send email to customer",
+            },
+        },
         "sensitive_reason": (
             "External communication requires approval"
         ),
     }
 
     with patch(
-        "approval.escalation.approval_queue"
-    ) as mock_queue:
+    "approval.escalation.approval_queue"
+    ) as mock_queue, patch(
+        "approval.escalation.determine_approval_level",
+        return_value=ApprovalLevel.TAKE_OVER,
+    ):
+        
+
 
         result = prepare_escalation_node(state)
 
@@ -58,9 +69,15 @@ def test_prepare_escalation_creates_approval_request():
             "task_1": "Draft completed."
         }
 
-        assert request.proposed_action == (
-            "Send email to customer"
-        )
+        assert request.proposed_action == {
+                "tool_name": "send_email",
+                "tool_inputs": {
+                    "to": "example@email.com",
+                    "subject": "Test email",
+                    "body": "Send email to customer",
+                },
+            }
+        
 
         assert request.escalation_reason == (
             "External communication requires approval"
