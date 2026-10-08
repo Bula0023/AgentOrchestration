@@ -1,14 +1,14 @@
 from langgraph.types import interrupt
 from state import AgentState
 from tracing.helpers import trace_node
-
+# This node is called when there is a human 
 def human_approval_node(state: AgentState):
     
     with trace_node(
         "human.pause",
         state,
     ) as (span, trace):
-        print("before interuption")
+
         decision = interrupt(
             {
                 "approval_id": state["approval_id"],
