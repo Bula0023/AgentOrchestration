@@ -1,0 +1,40 @@
+name: Build and Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build backend
+        run: |
+          docker build \
+            -t bula0023/agent-backend:${IMAGE_TAG:-latest} \
+            ./backend
+
+      - name: Push backend
+        run: |
+          docker push bula0023/agent-backend:${IMAGE_TAG:-latest}
+
+      - name: Build frontend
+        run: |
+          docker build \
+            -t bula0023/agent-frontend:${IMAGE_TAG:-latest} \
+            ./UI
+
+      - name: Push frontend
+        run: |
+          docker push bula0023/agent-frontend:${IMAGE_TAG:-latest}

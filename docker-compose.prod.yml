@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: bula0023/agent-backend:${IMAGE_TAG:-latest}
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    ports:
+      - "8000:8000"
+
+  frontend:
+    image: bula0023/agent-frontend:${IMAGE_TAG:-latest}
+    ports:
+      - "5173:5173"
+
+  redis:
+    image: redis:7-alpine
+
+  chroma:
+    image: chromadb/chroma:latest

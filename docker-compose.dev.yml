@@ -1,0 +1,43 @@
+services:
+  backend:
+    build: ./backend
+    container_name: agent-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      OLLAMA_URL: http://host.docker.internal:11434
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+      CHROMA_HOST: chroma
+      CHROMA_PORT: 8000
+
+    depends_on:
+      - redis
+      - chroma
+    command:
+      - uvicorn
+      - main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - "--reload"
+
+
+  frontend:
+    build: ./UI
+    container_name: agent-frontend
+    ports:
+      - "5173:5173"
+
+  redis:
+    image: redis:7-alpine
+    container_name: agent-redis
+
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: agent-chroma
