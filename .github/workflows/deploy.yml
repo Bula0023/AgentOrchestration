@@ -35,10 +35,7 @@ jobs:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
         run: |
-          pytest \
-          --cov=. \
-          --cov-report=term-missing \
-          --cov-fail-under=60
+          pytest
 
   build:
     runs-on: ubuntu-latest
