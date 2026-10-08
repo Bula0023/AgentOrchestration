@@ -1,14 +1,60 @@
-name: Build and Push
+name: deploy
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
-    branches:
-      - main
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: ["main"]
+
 jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - name : Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run backend tests
+        working-directory: backend
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+        run: |
+          pytest
+
+  build:
+    runs-on: ubuntu-latest
+    needs: backend-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build backend
+        run: |
+          docker build -t agent-backend ./backend
+
+      - name: Build frontend
+        run: |
+          docker build -t agent-ui ./UI
+
   build-and-push:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -23,20 +69,16 @@ jobs:
 
       - name: Build backend
         run: |
-          docker build \
-            -t bula0023/agent-backend:${IMAGE_TAG:-latest} \
-            ./backend
+          docker build -t bula0023/agent-backend:latest ./backend
 
       - name: Push backend
         run: |
-          docker push bula0023/agent-backend:${IMAGE_TAG:-latest}
+          docker push bula0023/agent-backend:latest
 
       - name: Build frontend
         run: |
-          docker build \
-            -t bula0023/agent-frontend:${IMAGE_TAG:-latest} \
-            ./UI
+          docker build -t bula0023/agent-frontend:latest ./UI
 
       - name: Push frontend
         run: |
-          docker push bula0023/agent-frontend:${IMAGE_TAG:-latest}
+          docker push bula0023/agent-frontend:latest

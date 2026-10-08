@@ -42,9 +42,7 @@ textarea {
 }
 
 
-/* =========================
-   PAGE
-   ========================= */
+/* Page */
 
 .page {
   width: 100%;
@@ -112,9 +110,7 @@ textarea {
 }
 
 
-/* =========================
-   PANELS
-   ========================= */
+/* Panels */
 
 .panel {
   min-width: 0;
@@ -167,9 +163,7 @@ textarea {
 }
 
 
-/* =========================
-   PENDING REVIEWS
-   ========================= */
+   /* PENDING REVIEWS */
 
 .approval-list {
   display: flex;
