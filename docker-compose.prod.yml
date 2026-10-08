@@ -13,6 +13,12 @@ services:
 
   redis:
     image: redis:7-alpine
+    container_name: agent-redis
+    ports:
+      - "6379:6379"
 
   chroma:
     image: chromadb/chroma:latest
+    container_name: agent-chroma
+    ports:
+      - "8001:8000"
