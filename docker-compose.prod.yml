@@ -4,6 +4,7 @@ services:
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       DATABASE_URL: ${DATABASE_URL}
+      VITE_API_URL: ${VITE_API_URL}
     ports:
       - "8000:8000"
 
@@ -18,8 +19,6 @@ services:
     image: bula0023/agent-frontend:${IMAGE_TAG:-latest}
     ports:
       - "5173:5173"
-    environment:
-      VITE_API_URL: ${VITE_API_URL}
 
   postgres:
     image: postgres:16-alpine
