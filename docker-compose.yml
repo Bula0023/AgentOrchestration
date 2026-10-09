@@ -44,7 +44,7 @@ services:
       - ./UI:/app
       - /app/node_modules
     environment:
-      VITE_API_URL: http://localhost:8000
+      VITE_API_URL=http://147.224.194.181:8000
     command:
       - npm
       - run
