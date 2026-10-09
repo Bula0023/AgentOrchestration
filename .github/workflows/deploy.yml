@@ -20,7 +20,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: agent_test
+          POSTGRES_DB: agent_db
         ports:
           - 5432:5432
 
