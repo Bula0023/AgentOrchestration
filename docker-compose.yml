@@ -16,11 +16,11 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       OLLAMA_URL: http://host.docker.internal:11434
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/agent_db
       CHROMA_HOST: chroma
       CHROMA_PORT: 8000
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
+      DATABASE_URL: ${DATABASE_URL}
     volumes:
       - ./backend:/app
     command:
