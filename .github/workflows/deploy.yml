@@ -67,18 +67,49 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # - name: Build backend
+      #   run: |
+      #     docker build -t bula0023/agent-backend:latest ./backend
+
+      # - name: Push backend
+      #   run: |
+      #     docker push bula0023/agent-backend:latest
+
+      # - name: Build frontend
+      #   run: |
+      #     docker build -t bula0023/agent-frontend:latest ./UI
+
+      # - name: Push frontend
+      #   run: |
+      #     docker push bula0023/agent-frontend:latest
       - name: Build backend
         run: |
-          docker build -t bula0023/agent-backend:latest ./backend
+          docker build \
+            -t bula0023/agent-backend:${IMAGE_TAG:-latest} \
+            ./backend
 
       - name: Push backend
         run: |
-          docker push bula0023/agent-backend:latest
+          docker push bula0023/agent-backend:${IMAGE_TAG:-latest}
 
       - name: Build frontend
         run: |
-          docker build -t bula0023/agent-frontend:latest ./UI
+          docker build \
+            -t bula0023/agent-frontend:${IMAGE_TAG:-latest} \
+            ./UI
 
       - name: Push frontend
         run: |
-          docker push bula0023/agent-frontend:latest
+          docker push bula0023/agent-frontend:${IMAGE_TAG:-latest}
+
+      - name: Deploy to VM
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            cd ~/agent-orchestration
+            export IMAGE_TAG=${{ github.sha }}
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
