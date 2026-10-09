@@ -33,12 +33,13 @@ from routing.routes import (
 from memory.working_memory import memory
 
 DB_URI = os.environ.get("DATABASE_URL")
+# DB_URI="postgresql://postgres:postgres@postgres:5432/agent_db"
 conn = psycopg.connect(
     DB_URI,
     autocommit=True,
     prepare_threshold=0,
 )
-print("DATABASE_URL =", repr(DB_URI))
+# print("DATABASE_URL =", repr(DB_URI))
 def intake_node(state: AgentState):
     task = state["task"].strip()
     # if not task:
