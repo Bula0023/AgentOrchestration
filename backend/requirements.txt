@@ -12,3 +12,5 @@ uvicorn
 fastapi
 openai
 langchain-openai
+langgraph-checkpoint-postgres 
+psycopg[binary,pool]

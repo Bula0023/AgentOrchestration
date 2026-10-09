@@ -16,9 +16,11 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       OLLAMA_URL: http://host.docker.internal:11434
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-
       CHROMA_HOST: chroma
       CHROMA_PORT: 8000
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      DATABASE_URL: ${DATABASE_URL}
     volumes:
       - ./backend:/app
     command:
@@ -51,6 +53,18 @@ services:
       - --host
       - 0.0.0.0
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: agent-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: agent_db
+      
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
@@ -79,3 +93,5 @@ volumes:
   redis_data:
 
   chroma_data:
+
+  postgres_data:

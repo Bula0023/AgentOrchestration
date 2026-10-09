@@ -1,7 +1,8 @@
 from langgraph.graph import StateGraph, START, END
-from langgraph.checkpoint.memory import InMemorySaver
+# from langgraph.checkpoint.memory import InMemorySaver
 import uuid
-
+import os
+import psycopg
 from state import AgentState
 from langgraph.types import Command
 from approval.actions import execute_approved_action_node
@@ -15,9 +16,7 @@ from approval.resume import human_approval_node, human_takeover_node
 from approval.escalation import prepare_escalation_node, sensitive_operation_node
 from memory.semantic_memory import semantic_memory
 from tracing.helpers import trace_node
-
-
-
+from langgraph.checkpoint.postgres import PostgresSaver
 from routing.routes import (
     route_subtask,
     route_after_specialist,
@@ -33,6 +32,13 @@ from routing.routes import (
 )
 from memory.working_memory import memory
 
+DB_URI = os.environ.get("DATABASE_URL")
+conn = psycopg.connect(
+    DB_URI,
+    autocommit=True,
+    prepare_threshold=0,
+)
+# print("DATABASE_URL =", repr(DB_URI))
 def intake_node(state: AgentState):
     task = state["task"].strip()
     # if not task:
@@ -391,7 +397,12 @@ builder.add_conditional_edges(
         "no_tool": "check_confidence",
     }
 )
-checkpointer = InMemorySaver()
+# checkpointer = InMemorySaver()
+checkpointer = PostgresSaver(
+    conn
+)
+print("CHECKPOINTER TYPE:", type(checkpointer))
+checkpointer.setup()
 graph = builder.compile(
     checkpointer=checkpointer
 )
