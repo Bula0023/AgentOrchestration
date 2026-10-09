@@ -18,6 +18,8 @@ services:
     image: bula0023/agent-frontend:${IMAGE_TAG:-latest}
     ports:
       - "5173:5173"
+    environment:
+      VITE_API_URL=http://147.224.194.181:8000
 
   postgres:
     image: postgres:16-alpine
@@ -28,6 +30,7 @@ services:
       POSTGRES_DB: agent_db
     ports:
       - "5432:5432"
+      # should not be exposed
     
   redis:
     image: redis:7-alpine
