@@ -14,12 +14,46 @@ spec:
       labels:
         app: agent-backend
 
+
     spec:
       containers:
         - name: backend
           image: bula0023/agent-backend:1.0.0
+          envFrom:
+            - configMapRef:
+                name: agent-backend-config
           ports:
             - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
           env:
             - name: DATABASE_URL
-              value: "postgresql://postgres:postgres@postgres:5432/agent_db"
+              valueFrom:
+                secretKeyRef:
+                  name: agent-backend-secret
+                  key: DATABASE_URL
+
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: agent-backend-secret
+                  key: OPENAI_API_KEY

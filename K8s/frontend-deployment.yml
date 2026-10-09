@@ -21,6 +21,7 @@ spec:
       containers:
         - name: frontend
           image: bula0023/agent-frontend:1.0.0
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 5173

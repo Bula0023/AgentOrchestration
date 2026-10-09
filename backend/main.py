@@ -109,6 +109,10 @@ def submit_task(
         "task_id": task_id,
         "status": "running"
     }
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.get("/approvals")
 def get_approvals():
     return approval_queue.list_pending()

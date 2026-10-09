@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: chroma
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: chroma
+
+  template:
+    metadata:
+      labels:
+        app: chroma
+
+    spec:
+      containers:
+        - name: chroma
+          image: chromadb/chroma:latest
+
+          ports:
+            - containerPort: 8000
