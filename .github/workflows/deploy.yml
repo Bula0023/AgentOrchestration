@@ -66,6 +66,24 @@ jobs:
   build-and-push:
     needs: build
     runs-on: ubuntu-latest
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push backend
+      uses: docker/build-push-action@v6
+      with:
+        context: ./backend
+        platforms: linux/arm64
+        push: true
+        tags: bula0023/agent-backend:${{ env.IMAGE_TAG }}
+    
+    - name: Build and push frontend
+      uses: docker/build-push-action@v6
+      with:
+        context: ./UI
+        platforms: linux/arm64
+        push: true
+        tags: bula0023/agent-frontend:${{ env.IMAGE_TAG }}
 
     steps:
       - name: Checkout
