@@ -43,7 +43,7 @@ jobs:
         env:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-          DATABASE_URL: ${DATABASE_URL}
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/agent_db
         run: |
           pytest
 
