@@ -9,8 +9,6 @@ on:
 jobs:
   backend-test:
     runs-on: ubuntu-latest
-    env:
-      IMAGE_TAG: 1.0.0
     services:
       redis:
         image: redis:7-alpine
@@ -68,6 +66,8 @@ jobs:
   build-and-push:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: 1.0.0
 
 
     steps:
