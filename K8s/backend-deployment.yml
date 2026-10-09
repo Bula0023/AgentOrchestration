@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-backend
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: agent-backend
+
+  template:
+    metadata:
+      labels:
+        app: agent-backend
+
+    spec:
+      containers:
+        - name: backend
+          image: bula0023/agent-backend:1.0.0
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://postgres:postgres@postgres:5432/agent_db"
