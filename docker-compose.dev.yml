@@ -18,6 +18,7 @@ services:
     depends_on:
       - redis
       - chroma
+      - postgres
     command:
       - uvicorn
       - main:app

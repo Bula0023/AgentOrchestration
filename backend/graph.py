@@ -33,7 +33,7 @@ from routing.routes import (
 from memory.working_memory import memory
 
 DB_URI = os.environ.get("DATABASE_URL")
-# DB_URI="postgresql://postgres:postgres@postgres:5432/agent_db"
+# DB_URI="postgresql://postgres:postgres@localhost:5432/agent_db"
 conn = psycopg.connect(
     DB_URI,
     autocommit=True,

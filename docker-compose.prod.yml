@@ -7,6 +7,13 @@ services:
     ports:
       - "8000:8000"
 
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - chroma
+      - postgres
+
   frontend:
     image: bula0023/agent-frontend:${IMAGE_TAG:-latest}
     ports:
