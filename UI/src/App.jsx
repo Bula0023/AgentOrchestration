@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import TraceExplorer from "./TraceExplorer";
-const API_URL = "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [approvals, setApprovals] = useState([]);
