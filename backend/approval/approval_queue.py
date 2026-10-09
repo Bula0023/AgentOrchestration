@@ -10,7 +10,7 @@ class ApprovalQueue:
         self.client = client or redis.Redis(
             host=os.getenv(
                 "REDIS_HOST",
-                "localhost"
+                "redis"
             ),
             port=int(
                 os.getenv(

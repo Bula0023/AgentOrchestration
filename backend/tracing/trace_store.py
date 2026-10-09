@@ -9,7 +9,7 @@ class TraceStore:
         self.redis = redis.Redis(
             host=os.getenv(
                 "REDIS_HOST",
-                "localhost"
+                "redis"
             ),
             port=int(
                 os.getenv(
