@@ -17,10 +17,6 @@ jobs:
         
       postgres:
         image: postgres:16-alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: agent_db
         ports:
           - 5432:5432
 
@@ -43,6 +39,9 @@ jobs:
         env:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: agent_db
         run: |
           pytest
 
