@@ -3,7 +3,7 @@ services:
     image: bula0023/agent-backend:${IMAGE_TAG:-latest}
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/agent_db
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/agent_db
     ports:
       - "8000:8000"
 
