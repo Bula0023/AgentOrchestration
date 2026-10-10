@@ -89,7 +89,7 @@ jobs:
           context: ./backend
           platforms: linux/arm64
           push: true
-          tags: bula0023/agent-backend:${{ env.IMAGE_TAG || 'latest' }}
+          tags: bula0023/agent-backend:${{github.sha}}
       
       - name: Build and push frontend
         uses: docker/build-push-action@v6
@@ -97,7 +97,7 @@ jobs:
           context: ./UI
           platforms: linux/arm64
           push: true
-          tags: bula0023/agent-frontend:${{ env.IMAGE_TAG || 'latest' }}
+          tags: bula0023/agent-frontend:${{github.sha}}
 
       # - name: Build backend
       #   run: |
@@ -189,13 +189,12 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
-            IMAGE_TAG=${{ env.IMAGE_TAG }}
-            sudo kubectl set image deployment/agent-backend \
-              backend=bula0023/agent-backend:${IMAGE_TAG:-latest}
-
             sudo kubectl set image deployment/agent-frontend \
-              frontend=bula0023/agent-frontend:${IMAGE_TAG:-latest}
+              frontend=bula0023/agent-frontend:${{ github.sha }}
 
-            sudo kubectl rollout status deployment/agent-backend
+            sudo kubectl set image deployment/agent-backend \
+              backend=bula0023/agent-backend:${{ github.sha }}
 
             sudo kubectl rollout status deployment/agent-frontend
+
+            sudo kubectl rollout status deployment/agent-backend
