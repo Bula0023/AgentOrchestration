@@ -19,6 +19,7 @@ spec:
       containers:
         - name: backend
           image: bula0023/agent-backend:1.0.0
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: agent-backend-config
@@ -37,7 +38,7 @@ spec:
               port: 8000
             initialDelaySeconds: 5
             periodSeconds: 5
-            
+
           resources:
             requests:
               cpu: "250m"
