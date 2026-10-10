@@ -159,25 +159,25 @@ jobs:
 
             docker compose -f docker-compose.prod.yml up -d --force-recreate
 
-      # - name: Set kubeconfig
-      #   run: |
-      #     mkdir -p ~/.kube
-      #     echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+      - name: Set kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
-      # - name: Update backend image
-      #   run: |
-      #     kubectl set image deployment/agent-backend \
-      #       backend=bula0023/agent-backend:${{env.IMAGE_TAG-latest }}
+      - name: Update backend image
+        run: |
+          kubectl set image deployment/agent-backend \
+            backend=bula0023/agent-backend:${{env.IMAGE_TAG-latest }}
 
-      # - name: Update frontend image
-      #   run: |
-      #     kubectl set image deployment/agent-frontend \
-      #       frontend=bula0023/agent-frontend:${{ env.IMAGE_TAG-latest }}
+      - name: Update frontend image
+        run: |
+          kubectl set image deployment/agent-frontend \
+            frontend=bula0023/agent-frontend:${{ env.IMAGE_TAG-latest }}
 
-      # - name: Wait for backend rollout
-      #   run: |
-      #     kubectl rollout status deployment/agent-backend
+      - name: Wait for backend rollout
+        run: |
+          kubectl rollout status deployment/agent-backend
 
-      # - name: Wait for frontend rollout
-      #   run: |
-      #     kubectl rollout status deployment/agent-frontend
+      - name: Wait for frontend rollout
+        run: |
+          kubectl rollout status deployment/agent-frontend
