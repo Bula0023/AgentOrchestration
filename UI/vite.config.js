@@ -7,9 +7,9 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     allowedHosts: [
+      'agent-orchestration.duckdns.org',
       "agent-frontend-service",
       "localhost",
-      'agent-orchestration.duckdns.org'
     ],
   },
 })
