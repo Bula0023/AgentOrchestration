@@ -6,9 +6,14 @@ metadata:
   namespace: default
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: default-strip-api@kubernetescrd
-
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: traefik
+
+  tls:
+    - hosts:
+        - agent-orchestration.duckdns.org.duckdns.org
+      secretName: agent-orchestration-tls
 
   rules:
     - host: agent-orchestration.duckdns.org
