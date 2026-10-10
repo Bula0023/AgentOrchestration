@@ -134,30 +134,30 @@ jobs:
       #   run: |
       #     docker push bula0023/agent-frontend:${IMAGE_TAG:-latest}
 
-      - name: Copy production compose to VM
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          source: "docker-compose.prod.yml"
-          target: "/home/ubuntu/agent-orchestration"
+      # - name: Copy production compose to VM
+      #   uses: appleboy/scp-action@v1
+      #   with:
+      #     host: ${{ secrets.VM_HOST }}
+      #     username: ${{ secrets.VM_USER }}
+      #     key: ${{ secrets.VM_SSH_KEY }}
+      #     source: "docker-compose.prod.yml"
+      #     target: "/home/ubuntu/agent-orchestration"
 
-      - name: Deploy to VM
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          script: |
-            cd /home/ubuntu/agent-orchestration
+      # - name: Deploy to VM
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.VM_HOST }}
+      #     username: ${{ secrets.VM_USER }}
+      #     key: ${{ secrets.VM_SSH_KEY }}
+      #     port: ${{ secrets.SSH_PORT || 22 }}
+      #     script: |
+      #       cd /home/ubuntu/agent-orchestration
 
-            docker compose -f docker-compose.prod.yml config
+      #       docker compose -f docker-compose.prod.yml config
 
-            docker compose -f docker-compose.prod.yml pull
+      #       docker compose -f docker-compose.prod.yml pull
 
-            docker compose -f docker-compose.prod.yml up -d --force-recreate
+      #       docker compose -f docker-compose.prod.yml up -d --force-recreate
 
       # - name: Set kubeconfig
       #   run: |
@@ -181,3 +181,21 @@ jobs:
       # - name: Wait for frontend rollout
       #   run: |
       #     kubectl rollout status deployment/agent-frontend
+      - name: Deploy to Kubernetes
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            IMAGE_TAG=${{ env.IMAGE_TAG }}
+            sudo kubectl set image deployment/agent-backend \
+              backend=bula0023/agent-backend:${IMAGE_TAG:-latest}
+
+            sudo kubectl set image deployment/agent-frontend \
+              frontend=bula0023/agent-frontend:${IMAGE_TAG:-latest}
+
+            sudo kubectl rollout status deployment/agent-backend
+
+            sudo kubectl rollout status deployment/agent-frontend
