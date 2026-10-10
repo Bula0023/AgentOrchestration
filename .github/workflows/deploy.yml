@@ -134,16 +134,54 @@ jobs:
       #   run: |
       #     docker push bula0023/agent-frontend:${IMAGE_TAG:-latest}
 
-      - name: Copy production compose to VM
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          source: "docker-compose.prod.yml"
-          target: "/home/ubuntu/agent-orchestration"
+      # - name: Copy production compose to VM
+      #   uses: appleboy/scp-action@v1
+      #   with:
+      #     host: ${{ secrets.VM_HOST }}
+      #     username: ${{ secrets.VM_USER }}
+      #     key: ${{ secrets.VM_SSH_KEY }}
+      #     source: "docker-compose.prod.yml"
+      #     target: "/home/ubuntu/agent-orchestration"
 
-      - name: Deploy to VM
+      # - name: Deploy to VM
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.VM_HOST }}
+      #     username: ${{ secrets.VM_USER }}
+      #     key: ${{ secrets.VM_SSH_KEY }}
+      #     port: ${{ secrets.SSH_PORT || 22 }}
+      #     script: |
+      #       cd /home/ubuntu/agent-orchestration
+
+      #       docker compose -f docker-compose.prod.yml config
+
+      #       docker compose -f docker-compose.prod.yml pull
+
+      #       docker compose -f docker-compose.prod.yml up -d --force-recreate
+
+      # - name: Set kubeconfig
+      #   run: |
+      #     mkdir -p ~/.kube
+      #     echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+
+      # - name: Update backend image
+      #   run: |
+      #     kubectl set image deployment/agent-backend \
+      #       backend=bula0023/agent-backend:${{env.IMAGE_TAG-latest }}
+
+      # - name: Update frontend image
+      #   run: |
+      #     kubectl set image deployment/agent-frontend \
+      #       frontend=bula0023/agent-frontend:${{ env.IMAGE_TAG-latest }}
+
+      # - name: Wait for backend rollout
+      #   run: |
+      #     kubectl rollout status deployment/agent-backend
+
+      # - name: Wait for frontend rollout
+      #   run: |
+      #     kubectl rollout status deployment/agent-frontend
+      - name: Deploy to Kubernetes
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VM_HOST }}
@@ -151,33 +189,12 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
-            cd /home/ubuntu/agent-orchestration
+            sudo kubectl set image deployment/agent-backend \
+              backend=bula0023/agent-backend:${IMAGE_TAG}
 
-            docker compose -f docker-compose.prod.yml config
+            sudo kubectl set image deployment/agent-frontend \
+              frontend=bula0023/agent-frontend:${IMAGE_TAG}
 
-            docker compose -f docker-compose.prod.yml pull
+            sudo kubectl rollout status deployment/agent-backend
 
-            docker compose -f docker-compose.prod.yml up -d --force-recreate
-
-      - name: Set kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-
-      - name: Update backend image
-        run: |
-          kubectl set image deployment/agent-backend \
-            backend=bula0023/agent-backend:${{env.IMAGE_TAG-latest }}
-
-      - name: Update frontend image
-        run: |
-          kubectl set image deployment/agent-frontend \
-            frontend=bula0023/agent-frontend:${{ env.IMAGE_TAG-latest }}
-
-      - name: Wait for backend rollout
-        run: |
-          kubectl rollout status deployment/agent-backend
-
-      - name: Wait for frontend rollout
-        run: |
-          kubectl rollout status deployment/agent-frontend
+            sudo kubectl rollout status deployment/agent-frontend
