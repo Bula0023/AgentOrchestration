@@ -12,7 +12,7 @@ spec:
 
   tls:
     - hosts:
-        - agent-orchestration.duckdns.org.duckdns.org
+        - agent-orchestration.duckdns.org
       secretName: agent-orchestration-tls
 
   rules:
