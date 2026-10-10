@@ -89,7 +89,7 @@ jobs:
           context: ./backend
           platforms: linux/arm64
           push: true
-          tags: bula0023/agent-backend:${{env.IMAGE_TAG-latest }}
+          tags: bula0023/agent-backend:${{ env.IMAGE_TAG || 'latest' }}
       
       - name: Build and push frontend
         uses: docker/build-push-action@v6
@@ -97,7 +97,7 @@ jobs:
           context: ./UI
           platforms: linux/arm64
           push: true
-          tags: bula0023/agent-frontend:${{ env.IMAGE_TAG-latest }}
+          tags: bula0023/agent-frontend:${{ env.IMAGE_TAG || 'latest' }}
 
       # - name: Build backend
       #   run: |
