@@ -3,12 +3,18 @@ kind: Ingress
 
 metadata:
   name: agent-ingress
+  namespace: default
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: default-strip-api@kubernetescrd
 
 spec:
+  ingressClassName: traefik
+
   rules:
-    - http:
+    - host: agent-orchestration.duckdns.org
+      http:
         paths:
-          - path: /api
+          - path: /
             pathType: Prefix
             backend:
               service:
@@ -16,7 +22,7 @@ spec:
                 port:
                   number: 5173
 
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
